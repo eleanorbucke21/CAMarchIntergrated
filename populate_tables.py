@@ -32,15 +32,15 @@ try:
     for _ in range(20):
         course_name = fake.word()
         programme = random.choice(programmes)
-        instructor = random.choice(lecturers)
+        lecturer = random.choice(lecturers)  # Changed variable name
         room = random.choice(rooms)
         credits = random.randint(1, 5)
         description = fake.text()
 
-        print("Inserting course:", course_name, programme, instructor, room, credits, description)
+        print("Inserting course:", course_name, programme, lecturer, room, credits, description)
 
-        cursor.execute("INSERT INTO Courses (CourseName, Programme, Instructor, Room, Credits, Description) VALUES (%s, %s, %s, %s, %s, %s)",
-                       (course_name, programme, instructor, room, credits, description))
+        cursor.execute("INSERT INTO Courses (CourseName, Programme, Lecturer, Room, Credits, Description) VALUES (%s, %s, %s, %s, %s, %s)",  # Changed column name
+                       (course_name, programme, lecturer, room, credits, description))
         conn.commit()
 
         # Get the last inserted course ID
@@ -49,7 +49,7 @@ try:
 
         # Populate Modules table for each course
         for module_name in modules:
-            cursor.execute("INSERT INTO Modules (ModuleName, CourseID) VALUES (%s, %s)", (module_name, course_id))
+            cursor.execute("INSERT INTO Modules (ModuleName, CourseID, Lecturer) VALUES (%s, %s, %s)", (module_name, course_id, lecturer))  # Changed column name
             conn.commit()
 
     # Populate Students table
