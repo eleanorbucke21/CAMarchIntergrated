@@ -119,6 +119,18 @@ try:
                        (enrollment_id, grade, grade_date))
         conn.commit()
 
+    # Populate programme table
+    for _ in range(4):  # Assuming 4 programmes
+        programme_name = fake.word()
+        programme_description = fake.text()
+        department = fake.word()
+        start_date = fake.date_this_decade()
+        end_date = fake.date_this_decade()
+
+        cursor.execute("INSERT INTO programme (ProgrammeName, ProgrammeDescription, Department, StartDate, EndDate) VALUES (%s, %s, %s, %s, %s)",
+                       (programme_name, programme_description, department, start_date, end_date))
+        conn.commit()
+
     print("Data population successful.")
 
     # Close database connection
