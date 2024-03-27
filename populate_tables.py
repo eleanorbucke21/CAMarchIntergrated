@@ -81,6 +81,25 @@ try:
                        (student_id, course_id, datetime.now()))
         conn.commit()
 
+    # Populate Feedback table
+    for _ in range(50):
+        # Query valid EnrollmentID values from Enrollments table
+        cursor.execute("SELECT EnrollmentID FROM Enrollments")
+        valid_enrollment_ids = [row[0] for row in cursor.fetchall()]
+
+        if not valid_enrollment_ids:
+            print("No valid enrollment IDs found. Aborting population of Feedback table.")
+            break
+
+        # Choose a random valid EnrollmentID
+        enrollment_id = random.choice(valid_enrollment_ids)
+        feedback_text = fake.paragraph()
+        feedback_date = fake.date_time_between(start_date='-1y', end_date='now')
+
+        cursor.execute("INSERT INTO Feedback (EnrollmentID, FeedbackText, FeedbackDate) VALUES (%s, %s, %s)",
+                       (enrollment_id, feedback_text, feedback_date))
+        conn.commit()
+
     # Populate Grades table
     for _ in range(100):
         # Query valid EnrollmentID values from Enrollments table
