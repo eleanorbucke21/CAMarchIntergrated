@@ -1,0 +1,31 @@
+Lecturer Report
+=================
+
+
+Lecturer Name: Dr. Brown
+Module: Module A, Students Enrolled: 15
+Module: Module B, Students Enrolled: 13
+Module: Module C, Students Enrolled: 14
+Module: Module D, Students Enrolled: 14
+Module: Module E, Students Enrolled: 13
+
+Lecturer Name: Prof. Williams
+Module: Module A, Students Enrolled: 9
+Module: Module B, Students Enrolled: 3
+Module: Module C, Students Enrolled: 4
+Module: Module D, Students Enrolled: 4
+Module: Module E, Students Enrolled: 6
+
+Lecturer Name: Prof. Johnson
+Module: Module A, Students Enrolled: 0
+Module: Module B, Students Enrolled: 0
+Module: Module C, Students Enrolled: 0
+Module: Module D, Students Enrolled: 0
+Module: Module E, Students Enrolled: 0
+
+Lecturer Name: Dr. Smith
+Module: Module A, Students Enrolled: 0
+Module: Module B, Students Enrolled: 0
+Module: Module C, Students Enrolled: 0
+Module: Module D, Students Enrolled: 0
+Module: Module E, Students Enrolled: 0
