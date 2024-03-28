@@ -96,10 +96,18 @@ public class UserManagement {
             System.out.println("Enter details for new user.");
             System.out.print("Username: ");
             String username = scanner.nextLine();
+
             System.out.print("Password: ");
-            String password = scanner.nextLine(); // Consider using password hashing here
-            System.out.print("Role (admin/user): ");
-            String role = scanner.nextLine();
+            String password = scanner.nextLine(); // In practice, consider hashing this password
+
+            System.out.print("Role (admin/user/office): ");
+            String role = scanner.nextLine().toLowerCase();
+
+            // Validate the role
+            while (!role.equals("admin") && !role.equals("user") && !role.equals("office")) {
+                System.out.println("Invalid role. Please enter 'admin', 'user', or 'office'.");
+                role = scanner.nextLine().toLowerCase();
+            }
 
             String sql = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
 
@@ -115,54 +123,60 @@ public class UserManagement {
                 if (affectedRows > 0) {
                     System.out.println("User added successfully.");
                 } else {
-                    System.out.println("A problem occurred and the user was not added.");
+                    System.out.println("A problem occurred, and the user was not added.");
                 }
             } catch (SQLException e) {
                 System.out.println("Error adding user: " + e.getMessage());
-                // If you're using a unique constraint for the username, handle duplicate username cases here.
             }
         }
         
         private static void modifyUsername() {
-            System.out.print("Enter the current username of the user you want to modify: ");
-            String currentUsername = scanner.nextLine();
+            System.out.print("Enter the username of the user whose role you want to modify: ");
+            String username = scanner.nextLine();
 
-            System.out.print("Enter new username: ");
-            String newUsername = scanner.nextLine();
+            System.out.print("Enter new role (admin/user/office): ");
+            String newRole = scanner.nextLine().toLowerCase();
 
-            String sql = "UPDATE users SET username = ? WHERE username = ?";
+            // Validate the new role
+            while (!newRole.equals("admin") && !newRole.equals("user") && !newRole.equals("office")) {
+                System.out.println("Invalid role. Please enter 'admin', 'user', or 'office'.");
+                newRole = scanner.nextLine().toLowerCase();
+            }
+
+            String sql = "UPDATE users SET role = ? WHERE username = ?";
 
             try (Connection conn = DBConnect.getConnection();
                  PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-                pstmt.setString(1, newUsername);
-                pstmt.setString(2, currentUsername);
+                pstmt.setString(1, newRole);
+                pstmt.setString(2, username);
 
                 int affectedRows = pstmt.executeUpdate();
 
                 if (affectedRows > 0) {
-                    System.out.println("Username updated successfully.");
+                    System.out.println("User role updated successfully.");
                 } else {
                     System.out.println("Could not find a user with that username.");
                 }
             } catch (SQLException e) {
-                System.out.println("Error updating username: " + e.getMessage());
+                System.out.println("Error updating user role: " + e.getMessage());
+            }
         }
-    }
+
     
         private static void modifyUserPassword() {
             System.out.print("Enter the username of the user whose password you want to modify: ");
             String username = scanner.nextLine();
 
             System.out.print("Enter new password: ");
-            String newPassword = scanner.nextLine(); // Remember, in a real application, hash this password
+            String newPassword = scanner.nextLine();
 
             String sql = "UPDATE users SET password = ? WHERE username = ?";
 
             try (Connection conn = DBConnect.getConnection();
                  PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-                pstmt.setString(1, newPassword); // In a real app, hash the password before storing it
+                pstmt.setString(1, newPassword);
                 pstmt.setString(2, username);
 
                 int affectedRows = pstmt.executeUpdate();
