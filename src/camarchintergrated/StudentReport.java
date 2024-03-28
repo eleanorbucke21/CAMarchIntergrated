@@ -19,9 +19,8 @@ import java.util.logging.Logger;
  *
  * @author rubyb
  */
-public class CourseReport {
-
-    private static final Logger LOGGER = Logger.getLogger(CourseReport.class.getName());
+public class StudentReport {
+    private static final Logger LOGGER = Logger.getLogger(StudentReport.class.getName());
 
     public static void main(String[] args) {
         Connection connection = null;
@@ -34,37 +33,33 @@ public class CourseReport {
             Class.forName("com.mysql.cj.jdbc.Driver");
             String url = "jdbc:mysql://localhost:3306/CMS";
             String user = "root";
-            String password = "QaisaR123!"; 
+            String password = "QaisaR123!";
             connection = DriverManager.getConnection(url, user, password);
-            
-            // Prepare the statement and execute the query
-            statement = connection.createStatement();
-            String query = "SELECT CourseName, Lecturer, Room FROM Courses";
-            resultSet = statement.executeQuery(query);
-            
-            // Prepare the file writer
-            writer = new BufferedWriter(new FileWriter("CourseReport.txt"));
-            
-            // Iterate through the result set
-            while (resultSet.next()) {
-                String courseName = resultSet.getString("CourseName");
-                String lecturer = resultSet.getString("Lecturer");
-                String room = resultSet.getString("Room");
-                
-                // Print to terminal
-                System.out.println("Course Name: " + courseName);
-                System.out.println("Lecturer: " + lecturer);
-                System.out.println("Room: " + room);
-                System.out.println();
 
-                // Write the same content to the file
-                writer.write("Course Name: " + courseName);
-                writer.newLine();
-                writer.write("Lecturer: " + lecturer);
-                writer.newLine();
-                writer.write("Room: " + room);
-                writer.newLine();
-                writer.newLine(); 
+            // Prepare the file writer
+            writer = new BufferedWriter(new FileWriter("StudentReport.txt"));
+            
+            // Example: Write headers or intro to the file
+            writer.write("Student Report\n");
+            writer.write("=================\n\n");
+            
+            // Prepare and execute your SQL queries here (this is just an example)
+            String basicInfoQuery = "SELECT StudentID, StudentName FROM Students";
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(basicInfoQuery);
+            
+            while (resultSet.next()) {
+                // Extract each student's information
+                int studentId = resultSet.getInt("StudentID");
+                String studentName = resultSet.getString("StudentName");
+                
+                // Example: Write basic student info to the file
+                writer.write("Student ID: " + studentId + ", Student Name: " + studentName + "\n");
+                
+                // Additional processing for programme, enrolled modules, completed modules and grades, and modules to repeat
+                // This might involve more queries and writing the results to the file
+                
+                writer.write("\n"); // Add a newline for spacing between students' reports
             }
         } catch (ClassNotFoundException | SQLException | IOException e) {
             LOGGER.log(Level.SEVERE, "An error occurred", e);
