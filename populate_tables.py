@@ -64,7 +64,67 @@ try:
         else:
             print(f"Email {email} already exists. Skipping insertion.")
 
-    # Populate Enrollments, Feedback, Grades, and Programme tables (unchanged from your original code)
+    # Populate Enrollments table
+    cursor.execute("SELECT StudentID FROM Students")
+    student_ids = [row[0] for row in cursor.fetchall()]
+    cursor.execute("SELECT CourseID FROM Courses")
+    course_ids = [row[0] for row in cursor.fetchall()]
+
+    print("Student IDs:", student_ids)
+    print("Course IDs:", course_ids)
+
+    for _ in range(100):
+        student_id = random.choice(student_ids)
+        course_id = random.choice(course_ids)
+
+        # Check if the enrollment already exists
+        cursor.execute("SELECT COUNT(*) FROM Enrollments WHERE StudentID = %s AND CourseID = %s",
+                       (student_id, course_id))
+        if cursor.fetchone()[0] == 0:
+            # Enrollment doesn't exist, insert new enrollment
+            cursor.execute("INSERT INTO Enrollments (StudentID, CourseID) VALUES (%s, %s)",
+                           (student_id, course_id))
+            conn.commit()
+        else:
+            print(f"Enrollment for student {student_id} in course {course_id} already exists. Skipping insertion.")
+
+        # Populate Feedback table for each enrollment
+        cursor.execute("SELECT EnrollmentID FROM Enrollments WHERE StudentID = %s AND CourseID = %s",
+                       (student_id, course_id))
+        enrollment_id = cursor.fetchone()[0]
+        feedback_text = fake.paragraph()
+
+        cursor.execute("INSERT INTO Feedback (EnrollmentID, FeedbackText) VALUES (%s, %s)",
+                       (enrollment_id, feedback_text))
+        conn.commit()
+
+        # Populate Grades table for each enrollment
+        grade = random.choice(['A', 'B', 'C', 'D', 'F'])
+
+        cursor.execute("INSERT INTO Grades (EnrollmentID, Grade) VALUES (%s, %s)",
+                       (enrollment_id, grade))
+        conn.commit()
+
+    # Populate Programme table
+    for programme_name in programmes:
+        cursor.execute("INSERT INTO Programme (ProgrammeName) VALUES (%s)",
+                       (programme_name,))
+        conn.commit()
+
+    # Populate Modules table
+    for course_id in course_ids:
+        # Fetch lecturer for the current course
+        cursor.execute("SELECT Lecturer FROM Courses WHERE CourseID = %s", (course_id,))
+        lecturer = cursor.fetchone()[0]  # Fetch the lecturer for the current course
+
+        for module_name in modules:
+            programme_id = random.choice(range(1, 5))  # Assuming there are 4 programmes
+            room = random.choice(rooms)
+
+            cursor.execute("INSERT INTO Modules (ModuleName, CourseID, ProgrammeID, Lecturer, Room) VALUES (%s, %s, %s, %s, %s)",
+                        (module_name, course_id, programme_id, lecturer, room))
+            conn.commit()
+
 
     print("Data population successful.")
 
