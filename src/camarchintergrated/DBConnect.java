@@ -17,8 +17,7 @@ public class DBConnect {
     private static final String USER = "root";
     private static final String PASSWORD = "QaisaR123!";
 
-    public static Connection getConnection() throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
+    public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 }
