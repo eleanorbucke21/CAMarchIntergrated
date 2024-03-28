@@ -1,0 +1,80 @@
+Course Name: voice
+Lecturer: Prof. Johnson
+Room: Online
+
+Course Name: least
+Lecturer: Prof. Johnson
+Room: Online
+
+Course Name: treatment
+Lecturer: Prof. Williams
+Room: A101
+
+Course Name: paper
+Lecturer: Prof. Williams
+Room: Online
+
+Course Name: pay
+Lecturer: Dr. Smith
+Room: B204
+
+Course Name: state
+Lecturer: Dr. Smith
+Room: Online
+
+Course Name: grow
+Lecturer: Prof. Johnson
+Room: Online
+
+Course Name: body
+Lecturer: Dr. Brown
+Room: B204
+
+Course Name: sea
+Lecturer: Dr. Smith
+Room: B204
+
+Course Name: garden
+Lecturer: Dr. Brown
+Room: B204
+
+Course Name: international
+Lecturer: Prof. Johnson
+Room: B204
+
+Course Name: what
+Lecturer: Dr. Smith
+Room: A101
+
+Course Name: free
+Lecturer: Prof. Williams
+Room: A101
+
+Course Name: door
+Lecturer: Dr. Brown
+Room: B204
+
+Course Name: thus
+Lecturer: Prof. Johnson
+Room: B204
+
+Course Name: huge
+Lecturer: Prof. Johnson
+Room: B204
+
+Course Name: even
+Lecturer: Prof. Williams
+Room: Online
+
+Course Name: care
+Lecturer: Dr. Brown
+Room: Online
+
+Course Name: position
+Lecturer: Prof. Johnson
+Room: B204
+
+Course Name: buy
+Lecturer: Dr. Brown
+Room: B204
+
