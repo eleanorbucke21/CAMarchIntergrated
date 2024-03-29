@@ -7,12 +7,13 @@ package camarchintergrated;
 import camarchintergrated.User;
 import camarchintergrated.DBConnect;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet; // This is the line you're adding
+import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 /**
  *
@@ -20,29 +21,51 @@ import java.sql.SQLException;
  */
 public class UserManagement {
     private static Scanner scanner = new Scanner(System.in);
-    private static String adminUsername = "admin";
-    private static String adminPassword = "java";
     private static List<User> users = new ArrayList<>();
 
     public static void main(String[] args) {
         System.out.println("Welcome to the User Management System");
-        authenticateAdmin();
-        showMainMenu();
+        authenticateUser();
     }
 
-    private static void authenticateAdmin() {
-        while (true) {
-            System.out.print("Enter username: ");
-            String username = scanner.nextLine();
-            System.out.print("Enter password: ");
-            String password = scanner.nextLine();
+     private static void authenticateUser() {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
 
-            // Simplified authentication logic
-            if ("admin".equals(username) && "java".equals(password)) {
-                System.out.println("Authentication successful!");
-                break;
-            } else {
-                System.out.println("Authentication failed, try again.");
+        while (true) {
+            try {
+                System.out.print("Enter username: ");
+                String username = scanner.nextLine();
+                System.out.print("Enter password: ");
+                String password = scanner.nextLine();
+
+                // Attempt to connect to the database and query for the user
+                conn = DBConnect.getConnection();
+                String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, username);
+                pstmt.setString(2, password);
+                rs = pstmt.executeQuery();
+
+                // Check if the user was found
+                if (rs.next()) {
+                    System.out.println(rs.getString("role") + " authentication successful!");
+                    break; // Exit the loop on successful authentication
+                } else {
+                    System.out.println("Authentication failed, try again.");
+                }
+            } catch (SQLException e) {
+                System.out.println("Error during authentication: " + e.getMessage());
+            } finally {
+                // Close resources to avoid memory leaks
+                try {
+                    if (rs != null) rs.close();
+                    if (pstmt != null) pstmt.close();
+                    if (conn != null) conn.close();
+                } catch (SQLException e) {
+                    System.out.println("Error closing resources: " + e.getMessage());
+                }
             }
         }
     }
@@ -98,14 +121,14 @@ public class UserManagement {
             String username = scanner.nextLine();
 
             System.out.print("Password: ");
-            String password = scanner.nextLine(); // In practice, consider hashing this password
+            String password = scanner.nextLine();
 
-            System.out.print("Role (admin/user/office): ");
+            System.out.print("Choose role (admin/office/lecturer): ");
             String role = scanner.nextLine().toLowerCase();
 
             // Validate the role
-            while (!role.equals("admin") && !role.equals("user") && !role.equals("office")) {
-                System.out.println("Invalid role. Please enter 'admin', 'user', or 'office'.");
+            while (!role.equals("admin") && !role.equals("office") && !role.equals("lecturer")) {
+                System.out.println("Invalid role. Please enter 'admin', 'office', or 'lecturer'.");
                 role = scanner.nextLine().toLowerCase();
             }
 
@@ -115,7 +138,7 @@ public class UserManagement {
                  PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
                 pstmt.setString(1, username);
-                pstmt.setString(2, password); // In a real app, hash the password before storing it
+                pstmt.setString(2, password);
                 pstmt.setString(3, role);
 
                 int affectedRows = pstmt.executeUpdate();
@@ -138,8 +161,8 @@ public class UserManagement {
             String newRole = scanner.nextLine().toLowerCase();
 
             // Validate the new role
-            while (!newRole.equals("admin") && !newRole.equals("user") && !newRole.equals("office")) {
-                System.out.println("Invalid role. Please enter 'admin', 'user', or 'office'.");
+            while (!newRole.equals("admin") && !newRole.equals("lecturer") && !newRole.equals("office")) {
+                System.out.println("Invalid role. Please enter 'admin', 'lecturer', or 'office'.");
                 newRole = scanner.nextLine().toLowerCase();
             }
 
@@ -220,9 +243,7 @@ public class UserManagement {
                 String newUsername = scanner.nextLine();
                 System.out.print("Enter new admin password: ");
                 String newPassword = scanner.nextLine();
-                adminUsername = newUsername;
-                adminPassword = newPassword;
-
+                
                 System.out.println("Admin credentials have been updated.");
         }
     }
