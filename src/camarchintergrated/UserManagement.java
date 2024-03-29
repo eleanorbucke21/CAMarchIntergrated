@@ -9,7 +9,7 @@ import camarchintergrated.DBConnect;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet; // This is the line you're adding
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -25,49 +25,55 @@ public class UserManagement {
 
     public static void main(String[] args) {
         System.out.println("Welcome to the User Management System");
-        authenticateUser();
+        String role = authenticateUser();
+
+        if ("office".equals(role)) {
+            showOfficeUserMenu();
+        } else if ("admin".equals(role)) {
+            showMainMenu()
+        } else {
+            System.out.println("Authentication or role detection failed.");
+        }
     }
 
-     private static void authenticateUser() {
+
+     private static String authenticateUser() {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
+        String role = null;
 
-        while (true) {
+        try {
+            System.out.print("Enter username: ");
+            String username = scanner.nextLine();
+            System.out.print("Enter password: ");
+            String password = scanner.nextLine();
+
+            conn = DBConnect.getConnection();
+            String sql = "SELECT role FROM users WHERE username = ? AND password = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                role = rs.getString("role");
+                System.out.println(role + " authentication successful!");
+            } else {
+                System.out.println("Authentication failed, try again.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error during authentication: " + e.getMessage());
+        } finally {
             try {
-                System.out.print("Enter username: ");
-                String username = scanner.nextLine();
-                System.out.print("Enter password: ");
-                String password = scanner.nextLine();
-
-                // Attempt to connect to the database and query for the user
-                conn = DBConnect.getConnection();
-                String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
-                pstmt = conn.prepareStatement(sql);
-                pstmt.setString(1, username);
-                pstmt.setString(2, password);
-                rs = pstmt.executeQuery();
-
-                // Check if the user was found
-                if (rs.next()) {
-                    System.out.println(rs.getString("role") + " authentication successful!");
-                    break; // Exit the loop on successful authentication
-                } else {
-                    System.out.println("Authentication failed, try again.");
-                }
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
             } catch (SQLException e) {
-                System.out.println("Error during authentication: " + e.getMessage());
-            } finally {
-                // Close resources to avoid memory leaks
-                try {
-                    if (rs != null) rs.close();
-                    if (pstmt != null) pstmt.close();
-                    if (conn != null) conn.close();
-                } catch (SQLException e) {
-                    System.out.println("Error closing resources: " + e.getMessage());
-                }
+                System.out.println("Error closing resources: " + e.getMessage());
             }
         }
+        return role;
     }
 
         private static void showMainMenu() {
@@ -75,7 +81,7 @@ public class UserManagement {
             System.out.println("\nMain Menu:");
             System.out.println("1. Add User");
             System.out.println("2. Change User Password");
-            System.out.println("3. Change User Username"); // New option for changing the username
+            System.out.println("3. Change User Username");
             System.out.println("4. Delete User");
             System.out.println("5. Change Admin Credentials");
             System.out.println("6. Exit");
@@ -246,5 +252,43 @@ public class UserManagement {
                 
                 System.out.println("Admin credentials have been updated.");
         }
-    }
+        
+        private static void showOfficeUserMenu() {
+            System.out.println("\nOffice User Menu:");
+            System.out.println("1. Change My Username");
+            System.out.println("2. Change My Password");
+            System.out.println("3. Exit");
+            System.out.print("Enter choice: ");
 
+            String choice = scanner.nextLine();
+            switch (choice) {
+                case "1":
+                    changeMyUsername();
+                    break;
+                case "2":
+                    changeMyPassword();
+                    break;
+                case "3":
+                    System.out.println("Exiting...");
+                    return;
+                default:
+                    System.out.println("Invalid choice, try again.");
+                    showOfficeUserMenu();
+            }
+        }
+
+        private static void changeMyUsername() {
+            System.out.print("Enter your current username: ");
+            String currentUsername = scanner.nextLine();
+            System.out.print("Enter your new username: ");
+            String newUsername = scanner.nextLine();
+        }
+
+        private static void changeMyPassword() {
+            System.out.print("Enter your username: ");
+            String username = scanner.nextLine();
+            System.out.print("Enter your new password: ");
+            String newPassword = scanner.nextLine();
+        }
+    }
+        
