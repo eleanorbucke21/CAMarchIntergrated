@@ -13,9 +13,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-
+//https://github.com/eleanorbucke21/CAMarchIntergrated
 /**
- *
+ * 
  * @author rubyb
  */
 public class UserManagement {
@@ -126,7 +126,7 @@ public class UserManagement {
                     break;
                 case 6:
                     System.out.println("Exiting...");
-                    return; // Exiting the application or returning from the method
+                    return;
                 default:
                     System.out.println("Invalid choice, try again.");
                     break;
@@ -164,7 +164,7 @@ public class UserManagement {
                     selectReportFormat("Lecturer");
                     break;
                 case 4:
-                    changeMyPassword(); // Make sure to implement this method securely
+                    changeMyPassword();
                     break;
                 case 5:
                     System.out.println("Exiting...");
